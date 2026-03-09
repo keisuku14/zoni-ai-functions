@@ -2,6 +2,21 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ZoniPost } from '@/types/zoni'
 
+// regionCurrentから都道府県を抽出
+function extractPrefecture(regionCurrent: string): string {
+  const prefectures = [
+    '北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県',
+    '茨城県', '栃木県', '群馬県', '埼玉県', '千葉県', '東京都', '神奈川県',
+    '新潟県', '富山県', '石川県', '福井県', '山梨県', '長野県', '岐阜県', '静岡県', '愛知県',
+    '三重県', '滋賀県', '京都府', '大阪府', '兵庫県', '奈良県', '和歌山県',
+    '鳥取県', '島根県', '岡山県', '広島県', '山口県',
+    '徳島県', '香川県', '愛媛県', '高知県',
+    '福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県',
+  ]
+  const found = prefectures.find((p) => regionCurrent.includes(p))
+  return found ?? regionCurrent
+}
+
 type Props = {
   post: ZoniPost
 }
@@ -28,14 +43,21 @@ export default function ZoniCard({ post }: Props) {
             </div>
           )}
           {/* 都道府県バッジ */}
-          {post.regionCurrent && (
+                    {(post.regionRoot || post.regionCurrent) && (
             <div
-              className="absolute top-2 left-2 text-xs px-2 py-0.5 rounded font-bold"
+              className="absolute top-2 left-2 text-xs px-2 py-0.5 rounded font-bold flex items-center gap-1"
               style={{ backgroundColor: 'var(--accent)', color: 'white' }}
             >
-              {post.regionCurrent}
+              <span>🏡</span>
+              <span>
+                {(post.regionRoot === '海外' || post.regionRoot === 'その他')
+                  ? extractPrefecture(post.regionCurrent || post.regionRoot || '')
+                  : (post.regionRoot || extractPrefecture(post.regionCurrent || ''))}
+              </span>
             </div>
           )}
+
+
         </div>
 
         {/* テキストエリア */}
@@ -51,10 +73,11 @@ export default function ZoniCard({ post }: Props) {
           {/* 地域 */}
           {(post.regionRoot || post.regionCurrent) && (
             <p className="text-xs mb-2 flex items-center gap-1" style={{ color: 'var(--accent)' }}>
-              📍 {post.regionCurrent}
-              {post.regionRoot && ` / ${post.regionRoot}`}
+              📍{' '}
+              {[post.regionCurrent, post.regionRoot].filter(Boolean).join(' / ')}
             </p>
           )}
+
 
           {/* タグ */}
           <div className="flex gap-1 flex-wrap mb-2">
