@@ -147,7 +147,7 @@ export default function ZoniForm({ initialData = {}, onSubmit, submitLabel = 'ä¿
 
   const inputClass = "w-full border rounded px-4 py-2 text-sm focus:outline-none focus:ring-2"
   const inputStyle = { borderColor: 'var(--border)', backgroundColor: 'white', color: 'var(--text)' }
-  const labelStyle = { color: 'var(--accent)', fontWeight: 'bold', fontSize: '0.9rem' }
+  const labelStyle = { color: 'white', fontWeight: 'bold', fontSize: '0.9rem' }
 
   return (
     <div

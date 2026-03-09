@@ -1,19 +1,97 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { subscribeZoniPosts } from '@/lib/firestore'
+import { ZoniPost } from '@/types/zoni'
 
 export default function Home() {
+  const [images, setImages] = useState<string[]>([])
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [nextIndex, setNextIndex] = useState(1)
+  const [showNext, setShowNext] = useState(false)
+
+  useEffect(() => {
+    const unsubscribe = subscribeZoniPosts((posts: ZoniPost[]) => {
+      const urls = posts
+        .filter((p) => p.imageUrl)
+        .map((p) => p.imageUrl as string)
+      const shuffled = urls.sort(() => Math.random() - 0.5)
+      setImages(shuffled)
+    })
+    return () => unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    if (images.length < 2) return
+    const interval = setInterval(() => {
+      // nextを表示開始（フェードイン）
+      setShowNext(true)
+      setTimeout(() => {
+        // フェード完了後にcurrentをnextに切り替え
+        setCurrentIndex((prev) => (prev + 1) % images.length)
+        setNextIndex((prev) => (prev + 1) % images.length)
+        setShowNext(false)
+      }, 1500)
+    }, 4000)
+    return () => clearInterval(interval)
+  }, [images])
+
   return (
     <div>
       {/* ヒーローセクション */}
-      <section className="washi-bg py-32 text-center border-b-4" style={{ borderColor: 'var(--accent)' }}>
-        <h1
-          className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
-          style={{ color: 'var(--accent)', fontFamily: 'serif' }}
-        >
-          全国の<br />雑煮文化を<br />未来へ
-        </h1>
-        <p className="text-lg mb-2" style={{ color: 'var(--text)' }}>
-          みんなの「お雑煮」を記録し、伝統をつなぐアーカイブプロジェクト
-        </p>
+      <section
+        className="relative py-32 text-center border-b-4 overflow-hidden"
+        style={{ borderColor: 'var(--accent)', minHeight: '420px' }}
+      >
+        {/* 背景画像：current（常時表示） */}
+        {images.length > 0 && (
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${images[currentIndex]})` }}
+          />
+        )}
+        {/* 背景画像：next（フェードイン） */}
+        {images.length > 1 && (
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-opacity duration-1500"
+            style={{
+              backgroundImage: `url(${images[nextIndex]})`,
+              opacity: showNext ? 1 : 0,
+              transitionDuration: '1500ms',
+            }}
+          />
+        )}
+
+        {/* オーバーレイ */}
+        <div
+          className="absolute inset-0"
+          style={{ backgroundColor: 'rgba(245, 239, 230, 0.45)' }}
+        />
+
+        {/* テキスト */}
+        <div className="relative z-10 px-4">
+          <div
+            className="inline-block px-8 py-4 mb-4 rounded"
+            style={{ backgroundColor: 'rgba(255,255,255,0.85)' }}
+          >
+            <h1
+              className="text-5xl md:text-7xl font-bold leading-tight"
+              style={{ color: 'var(--accent)', fontFamily: 'serif' }}
+            >
+              全国の<br />雑煮文化を<br />未来へ
+            </h1>
+          </div>
+          <br />
+          <div
+            className="inline-block px-6 py-2 rounded max-w-sm md:max-w-lg"
+            style={{ backgroundColor: 'rgba(255,255,255,0.85)' }}
+          >
+            <p className="text-base md:text-lg" style={{ color: 'var(--text)' }}>
+              みんなの「お雑煮」を記録し、伝統をつなぐアーカイブプロジェクト
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* 説明・CTAセクション */}
