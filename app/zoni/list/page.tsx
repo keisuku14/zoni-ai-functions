@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { subscribeZoniPosts } from '@/lib/firestore'
-import { ZoniPost } from '@/types/zoni'
+import { ZoniPost, getPrefectureToRegion } from '@/types/zoni'
 import ZoniCard from '@/components/ZoniCard'
 import ZoniMap from '@/components/ZoniMap'
 
@@ -24,10 +24,10 @@ export default function ZoniListPage() {
     return () => unsubscribe()
   }, [])
 
-  const filtered = posts.filter((p) => {
-    if (filterRegion && p.regionRoot !== filterRegion) return false
-    if (filterMochi && p.mochiType !== filterMochi) return false
-    if (filterSoup && p.soupBase !== filterSoup) return false
+    const filtered = posts.filter((p) => {
+      if (filterRegion && getPrefectureToRegion(p.regionRoot ?? '') !== filterRegion) return false
+      if (filterMochi && p.mochiType !== filterMochi) return false
+      if (filterSoup && p.soupBase !== filterSoup) return false
     return true
   })
 
@@ -126,7 +126,7 @@ export default function ZoniListPage() {
 
           {/* 地域 */}
           <div className="mb-4">
-            <p className="font-bold mb-2" style={{ color: 'var(--text)' }}>地域で選ぶ</p>
+            <p className="font-bold mb-2" style={{ color: 'var(--text)' }}>🏡 ルーツの地域で選ぶ</p>
             <div className="flex gap-2 flex-wrap">
               {['すべて', '北海道', '東北', '関東', '中部', '近畿', '中国', '四国', '九州', '沖縄', '海外', 'その他'].map((r) => (
                 <button
