@@ -1,12 +1,13 @@
 import { Timestamp } from 'firebase/firestore'
 
 export interface ZoniParsed {
-  soupBase?: string
-  soupType?: string
-  seasoning?: string
-  flavorNotes?: string
-  mochiType?: string
-  mochiCooking?: string
+  text?: string           // 要点サマリー
+  soupBase?: string       // スープの種類（自由記載）
+  soupType?: string       // スープの特徴
+  seasoning?: string      // 味付け
+  flavorNotes?: string    // 風味メモ
+  mochiShape?: string     // 餅の形状（丸餅 / 角餅）
+  mochiCooking?: string   // 餅の調理法（焼く / 煮る 等）
   ingredients?: string[]
   toppings?: string[]
   analyzedAt?: Timestamp
@@ -22,27 +23,25 @@ export interface ZoniPost {
   imageUrl?: string
   postalCode?: string
   regionCurrent?: string
-  regionRoot?: string        // 都道府県名（例：山形県）
-  rootIsOriginal?: boolean   // ルーツ＝現住所かどうか
+  regionRoot?: string
+  rootIsOriginal?: boolean
   geo?: {
     lat: number
     lng: number
   }
-
-  // 確定済みAI解析結果
-  soupBase?: string
-  mochiType?: string
+  soupBase?: string       // 確定済みスープ
+  mochiShape?: string     // 確定済み餅形状
+  mochiCooking?: string   // 確定済み餅調理法
+  mochiType?: string      // 旧フィールド互換用
   ingredients?: string[]
-  text?: string              // AI生成テキスト
-
-  // AI解析結果（未確定）
+  text?: string
   parsed?: ZoniParsed
-
   yummyCount?: number
   status?: string
   createdAt?: Timestamp
   updatedAt?: Timestamp
 }
+
 
 // 都道府県→地方名の変換
 export function getPrefectureToRegion(prefecture: string): string {

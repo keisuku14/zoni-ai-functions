@@ -23,48 +23,36 @@ export async function POST(req: NextRequest) {
     const components = result.address_components
     const geo = result.geometry.location
 
-    // 市区町村を取得
+    // 都道府県
+    const prefecture =
+      components.find((c: any) => c.types.includes('administrative_area_level_1'))?.long_name ?? ''
+
+    // 市区町村
     const locality =
-      components.find((c: any) => c.types.includes('locality'))?.long_name ||
-      components.find((c: any) => c.types.includes('administrative_area_level_2'))?.long_name ||
+      components.find((c: any) => c.types.includes('locality'))?.long_name ??
+      components.find((c: any) => c.types.includes('administrative_area_level_2'))?.long_name ??
       ''
 
-    // 都道府県を取得
-    const prefecture =
-      components.find((c: any) => c.types.includes('administrative_area_level_1'))?.long_name || ''
+    // 区（東京23区など）
+    const sublocality1 =
+      components.find((c: any) => c.types.includes('sublocality_level_1'))?.long_name ?? ''
 
-    // regionRootのマッピング
-    const regionRoot = getRegionRoot(prefecture)
+    // 町名
+    const sublocality2 =
+      components.find((c: any) => c.types.includes('sublocality_level_2'))?.long_name ?? ''
+
+    // regionCurrentを組み立て：都道府県＋市区町村＋区＋町名
+    const parts = [prefecture, locality, sublocality1, sublocality2].filter(Boolean)
+    // 重複除去（例：東京都・東京都が連続する場合）
+    const regionCurrent = parts.filter((v, i) => parts.indexOf(v) === i).join('')
 
     return NextResponse.json({
-      regionCurrent: locality,
+      regionCurrent,
       prefecture,
-      regionRoot,
+      regionRoot: prefecture, // regionRootは都道府県名をそのまま返す
       geo: { lat: geo.lat, lng: geo.lng },
     })
   } catch (e) {
     return NextResponse.json({ error: 'サーバーエラー' }, { status: 500 })
   }
-}
-
-function getRegionRoot(prefecture: string): string {
-  const map: Record<string, string> = {
-    北海道: '北海道',
-    青森県: '東北', 岩手県: '東北', 宮城県: '東北',
-    秋田県: '東北', 山形県: '東北', 福島県: '東北',
-    茨城県: '関東', 栃木県: '関東', 群馬県: '関東',
-    埼玉県: '関東', 千葉県: '関東', 東京都: '関東', 神奈川県: '関東',
-    新潟県: '中部', 富山県: '中部', 石川県: '中部',
-    福井県: '中部', 山梨県: '中部', 長野県: '中部',
-    岐阜県: '中部', 静岡県: '中部', 愛知県: '中部',
-    三重県: '近畿', 滋賀県: '近畿', 京都府: '近畿',
-    大阪府: '近畿', 兵庫県: '近畿', 奈良県: '近畿', 和歌山県: '近畿',
-    鳥取県: '中国', 島根県: '中国', 岡山県: '中国',
-    広島県: '中国', 山口県: '中国',
-    徳島県: '四国', 香川県: '四国', 愛媛県: '四国', 高知県: '四国',
-    福岡県: '九州', 佐賀県: '九州', 長崎県: '九州',
-    熊本県: '九州', 大分県: '九州', 宮崎県: '九州',
-    鹿児島県: '九州', 沖縄県: '沖縄',
-  }
-  return map[prefecture] || 'その他'
 }

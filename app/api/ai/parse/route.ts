@@ -26,12 +26,18 @@ export async function POST(req: NextRequest) {
 説明文や前置きは一切不要です。JSONのみ出力してください。
 
 {
-  "soupBase": "醤油 or 味噌 or 塩 or すまし or null",
-  "mochiType": "角餅 or 丸餅 or null",
-  "ingredients": ["具材1", "具材2", ...]
+  "text": "入力された説明文を元に、この雑煮を簡潔に説明する2〜3文の要点サマリー（日本語）",
+  "soupBase": "スープの種類を自由記載（例：鶏ガラ醤油、白味噌、あごだし塩など）。不明な場合はnull",
+  "soupType": "スープの特徴を自由記載（例：あっさり、こってり、甘めなど）。不明な場合はnull",
+  "seasoning": "主な味付けを自由記載（例：醤油、味噌、塩など）。不明な場合はnull",
+  "flavorNotes": "風味・特徴の一言メモ（例：鶏の旨みが凝縮された深い味わい）。不明な場合はnull",
+  "mochiShape": "餅の形状のみ（丸餅 or 角餅 or null）",
+  "mochiCooking": "餅の調理法のみ（焼く or 煮る or 両方 or null）",
+  "ingredients": ["具材1", "具材2", ...],
+  "toppings": ["トッピング1", ...]
 }
 
-判断できない場合はnullにしてください。`,
+判断できない場合はnullにしてください。ingredientsとtoppingsは空の場合は[]としてください。`,
           },
           {
             role: 'user',
@@ -49,7 +55,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'AI応答なし' }, { status: 500 })
     }
 
-    // JSONパース（```json ブロックが含まれる場合も対応）
     const cleaned = content.replace(/```json|```/g, '').trim()
     const parsed = JSON.parse(cleaned)
 
