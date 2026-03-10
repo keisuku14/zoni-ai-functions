@@ -22,7 +22,7 @@ export default function ZoniMap({ posts }: Props) {
           defaultCenter={{ lat: 36.5, lng: 136.0 }}
           defaultZoom={5}
           mapId="zoni-map"
-          gestureHandling="greedy"
+          gestureHandling="cooperative"
           onClick={() => setSelectedPost(null)}
         >
           {mappablePosts.map((post) => (
@@ -32,11 +32,14 @@ export default function ZoniMap({ posts }: Props) {
               onClick={() => setSelectedPost(post)}
               title={post.familyName}
             >
-              <Pin
-                background="#b5451b"
-                borderColor="#2c1a0e"
-                glyphColor="white"
-              />
+              <div style={{
+                width: '16px',
+                height: '16px',
+                borderRadius: '50%',
+                backgroundColor: '#b5451b',
+                border: '2px solid #2c1a0e',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.4)',
+              }} />
             </AdvancedMarker>
           ))}
 
