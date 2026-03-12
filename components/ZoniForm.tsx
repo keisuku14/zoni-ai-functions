@@ -249,7 +249,7 @@ export default function ZoniForm({ initialData = {}, onSubmit, submitLabel = '�
 
             {/* 餅 */}
             <p>
-              🍡 餅：{(parsed.mochiShape || parsed.mochiCooking)
+              🫓 餅：{(parsed.mochiShape || parsed.mochiCooking)
                 ? [parsed.mochiShape, parsed.mochiCooking ? `（${parsed.mochiCooking}）` : ''].filter(Boolean).join('')
                 : <span className="text-red-400 text-xs">？記載を確認してください</span>}
             </p>

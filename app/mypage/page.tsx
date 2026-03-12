@@ -7,7 +7,7 @@ import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestor
 import { db } from '@/lib/firebase'
 import { useAuth } from '@/contexts/AuthContext'
 import { ZoniPost } from '@/types/zoni'
-import ZoniCard from '@/components/ZoniCard'
+import MyPageCard from '@/components/MyPageCard'
 
 export default function MyPage() {
   const { user, loading, logout } = useAuth()
@@ -123,16 +123,7 @@ export default function MyPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {posts.map((post) => (
-            <div key={post.id} className="relative">
-              <ZoniCard post={post} />
-              <Link
-                href={`/zoni/edit/${post.id}`}
-                className="absolute top-2 right-2 text-xs px-3 py-1 rounded transition"
-                style={{ backgroundColor: 'var(--accent)', color: 'white' }}
-              >
-                編集
-              </Link>
-            </div>
+            <MyPageCard key={post.id} post={post} />
           ))}
         </div>
       )}

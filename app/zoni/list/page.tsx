@@ -105,7 +105,7 @@ export default function ZoniListPage() {
       <div className="mb-4">
         <p className="font-bold text-xs mb-2" style={{ color: 'var(--text)' }}>現在の暮らしの地域で選ぶ</p>
         <div className="flex gap-1 flex-wrap">
-          {['すべて', '北海道', '東北', '関東', '中部', '近畿', '中国', '四国', '九州', '沖縄', '海外', 'その他'].map((r) => (
+          {regionOptions.map((r) => (
             <button
               key={r}
               onClick={() => handleFilterChange('region', r === 'すべて' ? '' : r)}
