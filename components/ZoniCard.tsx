@@ -25,7 +25,7 @@ export default function ZoniCard({ post }: Props) {
   return (
     <Link href={`/zoni/${post.id}`}>
       <div
-        className="rounded-xl overflow-hidden border cursor-pointer transition hover:opacity-90 hover:shadow-lg h-full"
+        className="rounded-xl overflow-hidden border cursor-pointer h-full card-hover"
         style={{ backgroundColor: '#1a1a1a', borderColor: 'var(--border)' }}
       >
         {/* 画像エリア */}

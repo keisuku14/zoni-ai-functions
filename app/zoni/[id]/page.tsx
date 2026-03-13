@@ -50,6 +50,28 @@ export default function ZoniDetailPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
+      {/* 構造化データ */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Recipe',
+            name: `${post.familyName}のお雑煮`,
+            description: post.description,
+            image: post.imageUrl ?? '',
+            recipeCategory: '雑煮',
+            recipeCuisine: '日本料理',
+            keywords: `雑煮,${post.regionRoot ?? ''},${post.soupBase ?? ''}`,
+            recipeIngredient: post.ingredients ?? [],
+            author: {
+              '@type': 'Person',
+              name: post.familyName,
+            },
+          }),
+        }}
+      />
+
       {/* 戻るボタン */}
       <button
         onClick={() => router.back()}

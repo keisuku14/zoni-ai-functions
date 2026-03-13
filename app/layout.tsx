@@ -7,6 +7,29 @@ import { AuthProvider } from '@/contexts/AuthContext'
 export const metadata: Metadata = {
   title: '雑煮文化遺産 | ZONI HERITAGE',
   description: '日本各地で受け継がれてきた「お雑煮」の文化アーカイブ。地域ごとの雑煮を投稿・記録・共有するプロジェクトです。',
+  keywords: ['雑煮', 'お雑煮', '正月', '日本文化', '郷土料理', '文化遺産', 'ZONI HERITAGE'],
+  authors: [{ name: '雑煮文化遺産プロジェクト' }],
+  openGraph: {
+    title: '雑煮文化遺産 | ZONI HERITAGE',
+    description: '日本各地で受け継がれてきた「お雑煮」の文化アーカイブ。地域ごとの雑煮を投稿・記録・共有するプロジェクトです。',
+    url: 'https://zoni-heritage.jp',
+    siteName: '雑煮文化遺産',
+    locale: 'ja_JP',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '雑煮文化遺産 | ZONI HERITAGE',
+    description: '日本各地で受け継がれてきた「お雑煮」の文化アーカイブ。',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
 }
 
 export default function RootLayout({
@@ -16,7 +39,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className="washi-bg min-h-screen flex flex-col">
+      <body className="min-h-screen flex flex-col">
         <AuthProvider>
           <Header />
           <main className="flex-1">

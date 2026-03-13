@@ -25,7 +25,7 @@ export default function Header() {
 
   return (
     <>
-      <header style={{ backgroundColor: 'var(--header)' }} className="px-6 py-3 relative z-50">
+      <header style={{ backgroundColor: 'var(--header)' }} className="px-6 py-3 sticky top-0 z-50">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
 
           {/* ロゴ */}
