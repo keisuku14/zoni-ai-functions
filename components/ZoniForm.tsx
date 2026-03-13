@@ -43,9 +43,13 @@ export default function ZoniForm({ initialData = {}, onSubmit, submitLabel = '�
   const fileInputRef = useRef<HTMLInputElement>(null)
   const aiDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  const initialDescription = useRef(initialData.description ?? '')
+
   // 説明欄の変更でAI自動解析（debounce 1.5秒）
+  // 初期値から変更された場合のみ解析
   useEffect(() => {
     if (!description || description.length < 10) return
+    if (description === initialDescription.current) return
     if (aiDebounceRef.current) clearTimeout(aiDebounceRef.current)
     aiDebounceRef.current = setTimeout(() => {
       handleAiParse(description)

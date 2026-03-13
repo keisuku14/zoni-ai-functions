@@ -15,15 +15,13 @@ export default function YummyButton({ postId, initialCount, userId }: Props) {
 
   const handleClick = async () => {
     if (!userId) {
-      alert('Yummyするにはログインが必要です')
+      alert('「美味しそう！」するにはログインが必要です')
       return
     }
     if (loading) return
     setLoading(true)
     try {
       await toggleYummy(postId, userId)
-      // トランザクション後にカウントを反映
-      // onSnapshotで自動更新されるが、即時フィードバックのため仮更新
       setCount((prev) => prev + 1)
     } catch (e) {
       console.error(e)
@@ -36,11 +34,16 @@ export default function YummyButton({ postId, initialCount, userId }: Props) {
     <button
       onClick={handleClick}
       disabled={loading}
-      className="flex items-center gap-2 px-4 py-2 rounded-full border border-amber-300 text-amber-700 hover:bg-amber-50 transition disabled:opacity-50"
+      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition disabled:opacity-50"
+      style={{
+        border: '1px solid var(--border)',
+        backgroundColor: 'rgba(255,255,255,0.1)',
+        color: 'white',
+      }}
     >
       <span>🍚</span>
-      <span className="font-bold">{count}</span>
-      <span className="text-sm">Yummy!</span>
+      <span className="font-bold text-sm">{count}</span>
+      <span className="text-xs">美味しそう！</span>
     </button>
   )
 }

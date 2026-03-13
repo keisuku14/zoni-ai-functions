@@ -42,28 +42,30 @@ export default function ZoniDetailPage() {
 
   const isOwner = user?.uid === post.userId
 
+  const formatDate = (ts: any) => {
+    if (!ts) return null
+    const d = ts.toDate ? ts.toDate() : new Date(ts)
+    return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       {/* 戻るボタン */}
       <button
         onClick={() => router.back()}
-        className="text-sm mb-6 block transition hover:opacity-70"
-        style={{ color: 'var(--accent)' }}
+        className="text-sm mb-4 px-4 py-1.5 rounded border transition hover:opacity-70"
+        style={{ color: 'var(--accent)', borderColor: 'var(--accent)' }}
       >
         ← 一覧に戻る
       </button>
 
-       {/* 黒盆カード */}
-       <div
-         className="rounded-xl overflow-hidden"
-         style={{ 
-           border: '6px solid #1a1a1a',
-           outline: '2px solid var(--border)',
-           backgroundColor: '#1a1a1a' 
-         }}
-       >
+      {/* 黒盆カード */}
+      <div
+        className="rounded-xl overflow-hidden"
+        style={{ border: '4px solid var(--accent)', backgroundColor: '#1a1a1a' }}
+      >
         {/* 画像エリア */}
-        <div className="relative w-full h-64" style={{ backgroundColor: '#1a1a1a' }}>
+        <div className="relative w-full" style={{ aspectRatio: '16/9', backgroundColor: '#1a1a1a' }}>
           {post.imageUrl ? (
             <Image
               src={post.imageUrl}
@@ -78,95 +80,93 @@ export default function ZoniDetailPage() {
           )}
         </div>
 
-        {/* 和紙テキストエリア */}
-        <div className="p-6" style={{ backgroundColor: '#f5efe6' }}>
-          {/* タイトルと編集ボタン */}
-          <div className="flex items-start justify-between mb-3">
+        {/* 黒盆：家名・地域・日付 */}
+        <div className="px-6 py-4" style={{ backgroundColor: '#1a1a1a' }}>
+          <div className="flex items-start justify-between gap-2">
             <h1
               className="text-2xl font-bold"
-              style={{ color: 'var(--text)', fontFamily: 'serif' }}
+              style={{ color: 'white', fontFamily: 'serif' }}
             >
               {post.familyName}
             </h1>
-            {isOwner && (
-              <Link
-                href={`/zoni/edit/${post.id}`}
-                className="text-xs px-3 py-1.5 rounded transition hover:opacity-80"
-                style={{ backgroundColor: 'var(--accent)', color: 'white' }}
-              >
-                編集
-              </Link>
-            )}
-          </div>
-
-          {/* 地域 */}
-          {(post.regionRoot || post.regionCurrent) && (
-            <p className="text-sm mb-3" style={{ color: 'var(--accent)' }}>
-              📍 {post.regionCurrent}{post.regionRoot && ` / ${post.regionRoot}`}
-            </p>
-          )}
-
-          {/* タグ */}
-          <div className="flex gap-2 flex-wrap mb-4">
-            {post.mochiType && (
-              <span
-                className="text-sm px-3 py-1 rounded"
-                style={{ backgroundColor: '#e8d5bc', color: 'var(--text)' }}
-              >
-                餅：{post.mochiType}
-              </span>
-            )}
-            {post.soupBase && (
-              <span
-                className="text-sm px-3 py-1 rounded"
-                style={{ backgroundColor: '#e8d5bc', color: 'var(--text)' }}
-              >
-                スープ：{post.soupBase}
-              </span>
-            )}
-          </div>
-
-          <hr style={{ borderColor: 'var(--border)' }} className="mb-4" />
-
-          {/* 説明 */}
-          <div className="mb-4">
-            <p className="text-xs font-bold mb-1" style={{ color: 'var(--accent)' }}>
-              雑煮の説明
-            </p>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--text)' }}>
-              {post.description}
-            </p>
-          </div>
-
-          {/* 具材 */}
-          {post.ingredients && post.ingredients.length > 0 && (
-            <div className="mb-4">
-              <p className="text-xs font-bold mb-2" style={{ color: 'var(--accent)' }}>
-                具材
-              </p>
-              <div className="flex gap-2 flex-wrap">
-                {post.ingredients.map((ing, i) => (
-                  <span
-                    key={i}
-                    className="text-xs px-2 py-1 rounded border"
-                    style={{
-                      borderColor: 'var(--border)',
-                      color: 'var(--text)',
-                      backgroundColor: 'white',
-                    }}
-                  >
-                    {ing}
-                  </span>
-                ))}
-              </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <YummyButton
+                postId={post.id!}
+                initialCount={post.yummyCount ?? 0}
+                userId={user?.uid}
+              />
+              {isOwner && (
+                <Link
+                  href={`/zoni/edit/${post.id}`}
+                  className="text-xs px-3 py-1.5 rounded transition hover:opacity-80"
+                  style={{ backgroundColor: 'var(--accent)', color: 'white' }}
+                >
+                  編集
+                </Link>
+              )}
             </div>
+          </div>
+
+          {(post.regionCurrent || post.regionRoot) && (
+            <p className="text-sm mt-1" style={{ color: 'var(--accent)' }}>
+              📍 {post.regionCurrent}{post.regionRoot ? `（ルーツ：${post.regionRoot}）` : ''}
+            </p>
           )}
 
-          {/* 詳細レシピ */}
-          {post.detailedRecipe && (
-            <div className="mb-4">
-              <p className="text-xs font-bold mb-1" style={{ color: 'var(--accent)' }}>
-                詳細レシピ
+          <p className="text-xs mt-1 opacity-50" style={{ color: 'white' }}>
+            {formatDate(post.createdAt) && `作成日：${formatDate(post.createdAt)}`}
+            {formatDate(post.updatedAt) && ` ／ 更新日：${formatDate(post.updatedAt)}`}
+          </p>
+        </div>
+
+        {/* 和紙：スープ・餅・具材 */}
+        <div className="py-2" style={{ backgroundColor: '#1a1a1a' }}>
+          <div className="mx-3 rounded-lg px-5 py-5" style={{ backgroundColor: '#f5efe6' }}>
+            <div className="space-y-2 mb-4">
+              {post.soupBase && (
+                <p className="text-sm flex items-center gap-2" style={{ color: 'var(--text)' }}>
+                  <span className="text-base">🍲</span>
+                 <span><strong>スープ：</strong>{post.soupBase}</span>
+               </p>
+             )}
+              {post.mochiType && (
+                <p className="text-sm flex items-center gap-2" style={{ color: 'var(--text)' }}>
+                  <span className="text-base">🫓</span>
+                  <span><strong>餅タイプ：</strong>{post.mochiType}</span>
+                </p>
+              )}
+              {post.parsed?.seasoning && (
+                <p className="text-sm flex items-center gap-2" style={{ color: 'var(--text)' }}>
+                  <span className="text-base">🧂</span>
+                  <span><strong>味付け：</strong>{post.parsed.seasoning}</span>
+                </p>
+              )}
+              {post.ingredients && post.ingredients.length > 0 && (
+                <p className="text-sm flex items-center gap-2" style={{ color: 'var(--text)' }}>
+                  <span className="text-base">🥕</span>
+                  <span><strong>具材：</strong>{post.ingredients.join('・')}</span>
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* 黒盆：投稿者コメント */}
+        <div className="px-6 py-4" style={{ backgroundColor: '#1a1a1a' }}>
+          <p className="text-sm font-bold mb-2 flex items-center gap-2" style={{ color: 'var(--accent)' }}>
+            📝 投稿者のコメント
+          </p>
+          <p className="text-sm leading-relaxed" style={{ color: 'white', opacity: 0.85 }}>
+            {post.description}
+          </p>
+        </div>
+
+        {/* 和紙：詳細レシピ */}
+        {post.detailedRecipe && (
+          <div className="py-2" style={{ backgroundColor: '#1a1a1a' }}>
+            <div className="mx-3 rounded-lg px-5 py-5" style={{ backgroundColor: '#f5efe6' }}>
+              <p className="text-sm font-bold mb-3 flex items-center gap-2" style={{ color: 'var(--accent)' }}>
+                🍳 詳細レシピ
               </p>
               <p
                 className="text-sm leading-relaxed whitespace-pre-wrap"
@@ -175,20 +175,9 @@ export default function ZoniDetailPage() {
                 {post.detailedRecipe}
               </p>
             </div>
-          )}
-
-          {/* Yummy */}
-          <div
-            className="mt-6 pt-4 border-t"
-            style={{ borderColor: 'var(--border)' }}
-          >
-            <YummyButton
-              postId={post.id!}
-              initialCount={post.yummyCount ?? 0}
-              userId={user?.uid}
-            />
           </div>
-        </div>
+        )}
+
       </div>
     </div>
   )
