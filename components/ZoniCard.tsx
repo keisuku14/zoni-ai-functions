@@ -38,9 +38,12 @@ export default function ZoniCard({ post }: Props) {
               className="object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center opacity-20">
-              <span className="text-5xl">🍲</span>
-            </div>
+          <Image
+            src="/noimage-zoni.png"
+            alt="No Image"
+            fill
+            className="object-cover opacity-60"
+          />
           )}
           {/* 都道府県バッジ */}
                     {(post.regionRoot || post.regionCurrent) && (

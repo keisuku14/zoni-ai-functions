@@ -96,9 +96,12 @@ export default function ZoniDetailPage() {
               className="object-cover"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center opacity-20">
-              <span className="text-7xl">🍲</span>
-            </div>
+          <Image
+            src="/noimage-zoni.png"
+            alt="No Image"
+            fill
+            className="object-cover opacity-60"
+          />
           )}
         </div>
 
